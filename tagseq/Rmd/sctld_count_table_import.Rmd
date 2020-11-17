@@ -31,10 +31,6 @@ cd ~/Desktop
 mkdir SCTLD_analysis
 ```
 
-```{bash}
-cd ~/Desktop/SCTLD_analysis
-mkdir scripts
-```
 
 Once you have done the above go to the box and download the  
 + ofav_salmon_quant/
@@ -45,14 +41,16 @@ These should be saved in the SCTLD_analysis folder so you should have a director
 
 Desktop/
       |
-      ofav_salmon_quant/
-      mcav_salmon_quant/
-      scripts/
-      metadata.csv
+      SCTLD_analysis/
+                  |
+                  ofav_salmon_quant/
+                  mcav_salmon_quant/
+                  metadata.csv
       
 
 ```{r Making Salmon Vectors Names ofav, include=FALSE}
 #Loading quantification data output from the slippery Salmon
+setwd("~/Desktop/SCTLD_analysis/ofav_salmon_quant/")
 ofavall <- list.files(path = "~/Desktop/SCTLD_analysis/ofav_salmon_quant//", full.names = F, pattern = "\\_salmon$")
 
 FILESofav <- file.path(ofavall, "quant.sf")
@@ -86,6 +84,10 @@ setwd("~/Desktop/SCTLD_analysis/mcav_salmon_quant//")
 txi.salmon.count_mcav <- tximport(FILESmcav, type = "salmon", txOut = TRUE )
 ```
 
+```{r}
+view(txi.salmon.count_mcav)
+```
+
 We have read these in so lets just save all our count, abundance and length files as well
 
 ```{bash}
@@ -111,6 +113,7 @@ Now we are going to read in the metadata file and fix these for both species
 ```{r}
 meta <- read.csv(file = "~/Desktop/SCTLD_analysis/metadata.csv")
 str(meta)
+view(meta)
 ```
 
 Here, I filter the files I imported above and then filter them with the metadata file. This is needed as libraries failed and we only want the data for the samples that worked.  
@@ -118,6 +121,7 @@ Here, I filter the files I imported above and then filter them with the metadata
 ```{r filter mcav}
 meta %>% filter(salmon_label %in% mcavall) -> mcav_meta
 
+mcavall
 ## Check our salmon and meta lengths the same
 length(mcavall)
 nrow(mcav_meta)
@@ -129,6 +133,11 @@ length(ofavall)
 nrow(ofav_meta)
 ```
 
+
+
+
+
+ This will be covered tomorrow
 ## Making DeSeq2 Object 
 
 ```{r Making DeSeq object, include=FALSE}
